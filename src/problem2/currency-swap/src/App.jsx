@@ -1,5 +1,6 @@
 
-import './App.css'
+import './App.css';
+import './index.css'
 import CurrencySwapForm from "./CurrencySwapForm";
 
 export default function App() {
