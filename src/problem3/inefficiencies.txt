@@ -1,0 +1,35 @@
+1. getPriority(blockchain: any) uses any and is recomputed repeatedly
+    Using any disables TypeScript’s safety.
+    The function is recreated on every render.
+    Called multiple times unnecessarily during sorting.
+
+2. Incorrect filter logic + unnecessary work inside useMemo.
+Variable lhsPriority is referenced but never defined → runtime error.
+Filter logic is reversed and confusing:
+
+3. Sorting logic is missing a return value for equal priorities.
+
+4. Incorrect hook dependency list
+useMemo depends on: [balances, prices], But prices is never used inside the memoized callback → causes unnecessary recomputation.
+5. formattedBalances never used.
+6. Double mapping of balances (N + N iterations)
+formattedBalances map
+rows map
+Two passes over the same data when one would do.
+7. JSX key is index-based
+Using array index as key causes:
+Unstable list rendering
+Wasted re-renders
+Should use a stable unique property like currency or blockchain.
+8. Missing type properties
+Filtering and sorting access: balance.blockchain
+But WalletBalance interface does not define blockchain.
+This will fail TypeScript.
+The interfaces are incorrect.
+
+9. No null/undefined checks for prices
+This line may throw error: prices[balance.currency] * balance.amount
+if price is missing.
+
+10. Repeated getPriority calls
+Each item is passed through getPriority multiple times (filter + sort).
